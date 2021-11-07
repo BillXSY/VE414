@@ -1,3 +1,4 @@
 
 .DS_Store
-.ipynb_checkpoints/Demo-02-Blank-checkpoint.ipynb
+.ipynb_checkpoints/
+jupyter notebook/.ipynb_checkpoints/
