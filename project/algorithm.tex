@@ -1,0 +1,56 @@
+\documentclass[8pt,twocolumn]{ctexart}
+%\usepackage{amssymb}
+%\usepackage{bm}
+%\usepackage{textcomp} %命令\textacutedbl的包,二阶导符号
+ 
+% Page length commands go here in the preamble
+%\setlength{\oddsidemargin}{-0.25in} % Left margin of 1 in + 0 in = 1 in
+\setlength{\textwidth}{12in}   % 指定显示纸张宽度Right margin of 8.5 in - 1 in - 6.5 in = 1 in
+%\setlength{\topmargin}{-.75in}  % Top margin of 2 in -0.75 in = 1 in
+%\setlength{\textheight}{9.2in}  % Lower margin of 11 in - 9 in - 1 in = 1 in
+%\setlength{\parindent}{0in}
+ 
+ 
+% 前期准备——start
+\makeatletter
+\newif\if@restonecol
+\makeatother
+\let\algorithm\relax
+\let\endalgorithm\relax
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}%[ruled,vlined]{
+\usepackage{algpseudocode}
+\usepackage{amsmath}
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}  % Use Input in the format of Algorithm
+\renewcommand{\algorithmicensure}{\textbf{Output:}} % Use Output in the format of Algorithm 
+% 前期准备——end
+ 
+\begin{document}
+ 
+% 主体algorithm部分——start
+    \begin{algorithm}
+        
+        \caption{Service checkpoint image storage node and routing path selection}
+        
+        \LinesNumbered
+        
+        \KwIn{host server $PM_s$ that $SerImg_k$ is fetched from, $subnet_s$ that $PM_s$ belongs to, $pod_s$ that $PM_s$ belongs to}
+        
+        \KwOut{Service image storage server $storageserver$,and the image transfer path $path$}
+        
+        $storageserver$ = Storage node selection($PM_s$, $SerImg_k$, $subnet_s$, $pod_s$)\;
+        
+        
+        \If{ $storageserver$ $\neq$ null}
+        {
+             select a path from $storageserver$ to $PM_s$ and assign the path to $path$\;
+        }
+        
+        \textbf{final} \;
+        
+        \textbf{return} $storageserver$ and $path$;
+        
+    \end{algorithm}
+% 主体algorithm部分——end
+ 
+\end{document}
+
