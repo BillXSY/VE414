@@ -1,0 +1,202 @@
+---
+title: "Proj"
+author: "Qiansiqi Hu"
+date: "2021/12/3"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+data <- read.csv("data_proj_414.csv")
+data <- data[,-1]
+
+plot(data$Y ~ data$X)
+```
+
+```{r}
+tripofPotter <- data[which(data$Potter == 1), ]
+
+tripofWeasley <- data[which(data$Weasley == 1), ]
+
+tripofGranger <- data[which(data$Granger == 1), ]
+
+plot(tripofPotter$Y ~ tripofPotter$X)
+```
+
+```{r}
+colorSet <- colors()
+k <- max(tripofPotter$Trip)
+plot(tripofPotter[which(tripofPotter$Trip == 1),]$Y ~ tripofPotter[which(tripofPotter$Trip == 1),]$X, xlim=c(0,80), ylim=c(0,80))
+for (i in 2:10) {
+  points(tripofPotter[which(tripofPotter$Trip == i),]$X,    tripofPotter[which(tripofPotter$Trip == i),]$Y, col = colorSet[i + i * 10])
+}
+```
+
+```{r}
+plot(tripofPotter[which(tripofPotter$Close > 0),]$Y ~tripofPotter[which(tripofPotter$Close > 0),]$X)
+```
+
+```{r}
+closePotter <- data.frame(tripofPotter[which(tripofPotter$Close > 0),]$X,tripofPotter[which(tripofPotter$Close > 0),]$Y, tripofPotter[which(tripofPotter$Close > 0),]$Close)
+names(closePotter) = c("X","Y", "Close")
+library(mclust)
+model1_close <- Mclust(closePotter[,1:2], G = 6:15)
+plot(model1_close)
+```
+
+```{r}
+plot(tripofPotter[which(tripofPotter$Far > 0),]$Y ~tripofPotter[which(tripofPotter$Far > 0),]$X)
+```
+```{r}
+farPotter <- data.frame(tripofPotter[which(tripofPotter$Far > 0),]$X,tripofPotter[which(tripofPotter$Far > 0),]$Y, tripofPotter[which(tripofPotter$Far > 0),]$Far)
+names(farPotter) <- c("X","Y", "Far")
+```
+
+```{r}
+plot(tripofWeasley[which(tripofWeasley$Trip == 1),]$Y ~ tripofWeasley[which(tripofWeasley$Trip == 1),]$X, xlim=c(0,80), ylim=c(0,85))
+for (i in 2:10) {
+  points(tripofWeasley[which(tripofWeasley$Trip == i),]$X,    tripofWeasley[which(tripofWeasley$Trip == i),]$Y, col = colorSet[i + i * 10])
+}
+```
+```{r}
+plot(tripofWeasley[which(tripofWeasley$Close > 0),]$Y ~
+       tripofWeasley[which(tripofWeasley$Close > 0),]$X)
+```
+
+```{r}
+closeWeasley <- data.frame(tripofWeasley[which(tripofWeasley$Close > 0),]$X, tripofWeasley[which(tripofWeasley$Close > 0),]$Y)
+names(closeWeasley) <- c("X","Y")
+model2_close <- Mclust(closeWeasley, G = 6:15)
+plot(model2_close)
+```
+
+```{r}
+plot(tripofWeasley[which(tripofWeasley$Far > 0),]$Y ~
+       tripofWeasley[which(tripofWeasley$Far > 0),]$X)
+```
+
+```{r}
+plot(tripofGranger[which(tripofGranger$Trip == 1),]$Y ~ tripofGranger[which(tripofGranger$Trip == 1),]$X, xlim=c(0,80), ylim=c(0,80))
+for (i in 2:10) {
+  points(tripofGranger[which(tripofGranger$Trip == i),]$X,    tripofGranger[which(tripofGranger$Trip == i),]$Y, col = colorSet[i + i * 10])
+}
+```
+
+```{r}
+plot(tripofGranger[which(tripofGranger$Close > 0),]$Y ~
+       tripofGranger[which(tripofGranger$Close > 0),]$X)
+```
+
+```{r}
+closeGranger <- data.frame(tripofGranger[which(tripofGranger$Close > 0),]$X, tripofGranger[which(tripofGranger$Close > 0),]$Y, tripofGranger[which(tripofGranger$Close > 0),]$Close)
+names(closeGranger) = c("X","Y","Close")
+model3_close = Mclust(closeGranger[,1:2], G = 6:15)
+plot(model3_close)
+```
+
+```{r}
+plot(tripofGranger[which(tripofGranger$Far > 0),]$Y ~
+       tripofGranger[which(tripofGranger$Far > 0),]$X)
+```
+
+Assumption: For one Jiuling, the closer it is to it, the more Tayes from it can be found.
+
+```{r}
+# Observe clusters with different results
+cluster1 <- closePotter[which(model1_close$classification == 2),]
+for(i in 1:dim(cluster1)[1]){
+  for (j in 1:(cluster1[i,]$Close - 1)) {
+    cluster1 <- rbind(cluster1, cluster1[i,])
+  }
+}
+plot(cluster1$Y ~ cluster1$X)
+m <- Mclust(cluster1, G=1:2)
+plot(m)
+```
+Therefore, for this cluster, there's only one Jiuling.
+
+```{r}
+cluster2 <- closePotter[which(model1_close$classification == 7),]
+for (i in 1:dim(cluster2)[1]) {
+  for(j in 1:(cluster2[i,]$Close - 1)) {
+    cluster2 <- rbind(cluster2, cluster2[i,])
+  }
+}
+plot(cluster2$Y ~ cluster2$X)
+m <- Mclust(cluster2[,1:2], G=1:2)
+plot(m)
+```
+
+```{r}
+cluster3 <- closePotter[which(model1_close$classification == 3),]
+for(i in 1:dim(cluster3)[1]) {
+  for(j in 1:(cluster3[i,]$Close - 1)) {
+    cluster3 <- rbind(cluster3, cluster3[i,])
+  }
+}
+plot(cluster3$Y ~ cluster3$X)
+m <- Mclust(cluster3[,1:2], G=1:2)
+plot(m)
+```
+
+```{r}
+cluster4 <- closeWeasley[which(model2_close$classification == 3),]
+cluster5 <- closeWeasley[which(model2_close$classification == 10),]
+plot(cluster4$Y ~ cluster4$X, ylim=c(59,67), xlim=c(45,54))
+points(cluster5$X, cluster5$Y, col="red")
+```
+
+```{r}
+cluster6 <- closeGranger[which(model3_close$classification == 8),]
+
+```
+
+
+```{r}
+close_all <- data[which(data$Close > 0),]
+library(mclust)
+model_all <- Mclust(close_all[,1:2], G = 6:15)
+plot(model_all)
+
+```
+```{r}
+close_weighted <- close_all[,-6:-3]
+close_weighted <- close_weighted[,-4]
+for (i in 1:dim(close_weighted)[1]) {
+  for (j in 1:(close_weighted[i,]$Close - 1)) {
+    close_weighted <- rbind(close_weighted, close_weighted[i,])
+  }
+}
+
+```
+
+```{r}
+model_weighted <- Mclust(close_weighted[,1:2], G = 6:15, control = emControl(tol = c(1e-07, sqrt(.Machine$double.eps))))
+plot(model_weighted)
+```
+
+```{r}
+oneTripPotter <- tripofPotter[which(tripofPotter$Trip == 1),]
+plot(oneTripPotter[which(oneTripPotter$Close > 0),]$Y ~ oneTripPotter[which(oneTripPotter$Close > 0),]$X, xlim=c(0,80), ylim=c(0,80))
+for (i in 2:max(tripofPotter$Trip)) {
+  oneTripPotter <- tripofPotter[which(tripofPotter$Trip == i),]
+  points(oneTripPotter[which(oneTripPotter$Close > 0),]$X,    oneTripPotter[which(oneTripPotter$Close > 0),]$Y, col = colorSet[491 + i * 2])
+}
+```
+
+```{r}
+oneTripWeasley <- tripofWeasley[which(tripofWeasley$Trip == 1),]
+plot(oneTripWeasley[which(oneTripWeasley$Close > 0),]$Y ~ oneTripWeasley[which(oneTripWeasley$Close >0),]$X,xlim=c(0,80),ylim=c(0,80))
+for(i in 2:max(tripofWeasley$Trip)) {
+  oneTripWeasley <- tripofWeasley[which(tripofWeasley$Trip == i),]
+  points(oneTripWeasley[which(oneTripWeasley$Close > 0),]$X,oneTripWeasley[which(oneTripWeasley$Close > 0),]$Y,col = colorSet[491+i*2])
+}
+
+```
+
+```{r}
+ 
+```
